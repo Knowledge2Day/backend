@@ -224,7 +224,8 @@ export const getVisitorCount = asyncHandler(async (req, res) => {
 
 // Increment the visitor count and add the IP if it's new
 export const incrementVisitorCount = asyncHandler(async (req, res) => {
-  const ipAddress = req.headers['x-forwarded-for'] || req.ip;
+  // Get the first IP from the x-forwarded-for header or fall back to req.ip
+  const ipAddress = (req.headers['x-forwarded-for'] || req.ip).split(',')[0].trim();
   console.log('Visitor IP Address:', ipAddress); // Log to check IP
 
   let visitor = await Visitor.findOne({ name: 'localhost' });
@@ -256,6 +257,8 @@ export const incrementVisitorCount = asyncHandler(async (req, res) => {
     res.status(500).json({ message: 'Error saving visitor data' });
   }
 });
+
+
 
 export const createLiveDemo = async (req, res) => {
   try {
