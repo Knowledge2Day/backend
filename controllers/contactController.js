@@ -212,9 +212,9 @@ export const createContactMessage = asyncHandler(async (req, res) => {
 });
 
 
-
 export const getVisitorCount = asyncHandler(async (req, res) => {
   const visitor = await Visitor.findOne({ name: 'localhost' });
+
   if (!visitor) {
     res.status(404).json({ message: 'Visitor count not found' });
   } else {
@@ -222,10 +222,10 @@ export const getVisitorCount = asyncHandler(async (req, res) => {
   }
 });
 
-
+// Increment the visitor count and add the IP if it's new
 export const incrementVisitorCount = asyncHandler(async (req, res) => {
   const ipAddress = req.headers['x-forwarded-for'] || req.ip;
-  console.log("Visitor IP Address: ", ipAddress); // Log to check IP
+  console.log('Visitor IP Address:', ipAddress); // Log to check IP
 
   let visitor = await Visitor.findOne({ name: 'localhost' });
 
@@ -235,32 +235,26 @@ export const incrementVisitorCount = asyncHandler(async (req, res) => {
       count: 1,
       ips: [ipAddress],
     });
-    try {
-      await visitor.save();
-    } catch (error) {
-      console.error("Error saving visitor data:", error);
-      return res.status(500).json({ message: "Error saving visitor data" });
-    }
   } else {
     if (!Array.isArray(visitor.ips)) {
       visitor.ips = [];
     }
 
-    console.log("Current IPs: ", visitor.ips); // Log the current IPs
+    console.log('Current IPs:', visitor.ips); // Log the current IPs
 
     if (!visitor.ips.includes(ipAddress)) {
       visitor.count += 1;
       visitor.ips.push(ipAddress);
-      try {
-        await visitor.save();
-      } catch (error) {
-        console.error("Error saving visitor data:", error);
-        return res.status(500).json({ message: "Error saving visitor data" });
-      }
     }
   }
 
-  res.json(visitor);
+  try {
+    await visitor.save();
+    res.json(visitor);
+  } catch (error) {
+    console.error('Error saving visitor data:', error);
+    res.status(500).json({ message: 'Error saving visitor data' });
+  }
 });
 
 export const createLiveDemo = async (req, res) => {
