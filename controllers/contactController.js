@@ -69,10 +69,10 @@ export const sendOtp = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Your OTP Code",
-      text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
+      text: `Your OTP code is ${otp}. It is valid for 1 minutes.`,
     });
 
-    const otpExpires = new Date(Date.now() + 5 * 60000); // 5 minutes
+    const otpExpires = new Date(Date.now() + 1 * 60000); // 5 minutes
     await User.updateOne({ email }, { otp, otpExpires }, { upsert: true });
 
     res.status(200).json({ message: "OTP sent successfully" });
@@ -130,10 +130,10 @@ export const sendOtpToUser = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Your OTP Code',
-      text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
+      text: `Your OTP code is ${otp}. It is valid for 1 minutes.`,
     });
 
-    const otpExpires = new Date(Date.now() + 5 * 60000); // OTP expires in 5 minutes
+    const otpExpires = new Date(Date.now() + 1 * 60000); // OTP expires in 5 minutes
     await LiveDemo1.updateOne({ email }, { otp, otpExpires }, { upsert: true });
 
     res.status(200).json({ message: 'OTP sent successfully' });
