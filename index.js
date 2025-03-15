@@ -12,7 +12,7 @@ const app = express();
 
 // Use the cors middleware
 app.use(cors({
-  origin:true,
+  origin:"https://knowledge2day.com",
   credentials:true
 }));
 
