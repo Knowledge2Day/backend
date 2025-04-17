@@ -69,17 +69,9 @@ export const sendOtp = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Your OTP Code",
-      html: `
-        Hi there, <br/>
-        Your OTP for verification purposes is: <br/>
-        <center><h1>${otp}</h1> 
-        <strong> It is valid for 1 minute. </strong> </center>  <br/>
-         For the security of your account, please do not share the OTP with anyone. If you did not request this, you can safely ignore this message. <br/><br/>
-        Thanks & Regards, <br/>
-        Knowledge Today <br/>
-        City Vista, A Wing, 4th Floor, Office No. 15, Kharadi IT Park, Kharadi, Pune-411014
-      `,
+      text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
     });
+    
 
     const otpExpires = new Date(Date.now() + 1 * 60000); // 5 minutes
     await User.updateOne({ email }, { otp, otpExpires }, { upsert: true });
@@ -139,18 +131,9 @@ export const sendOtpToUser = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Your OTP Code',
-       html: `
-        Hi there, <br/>
-        Your OTP for verification purposes is: <br/>
-        <center><h1>${otp}</h1> 
-        <strong> It is valid for 1 minute. </strong> </center>  <br/>
-         For the security of your account, please do not share the OTP with anyone. If you did not request this, you can safely ignore this message. <br/><br/>
-        Thanks & Regards, <br/>
-        Knowledge Today <br/>
-        City Vista, A Wing, 4th Floor, Office No. 15, Kharadi IT Park, Kharadi, Pune-411014
-      `,
-
+      text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
     });
+    
 
     const otpExpires = new Date(Date.now() + 1 * 60000); // OTP expires in 5 minutes
     await LiveDemo1.updateOne({ email }, { otp, otpExpires }, { upsert: true });
@@ -277,13 +260,11 @@ export const incrementVisitorCount = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 export const createLiveDemo = async (req, res) => {
   try {
     const { tech, date, time, name, email, contact } = req.body;
 
-    const liveDemo = new LiveDemo({ tech, date, time, name, email, contact });
+    const liveDemo = new LiveDemo1({ tech, date, time, name, email, contact });
     await liveDemo.save();
 
     res.status(201).json({ message: 'Live demo registered successfully!' });
